@@ -48,6 +48,10 @@ func (lim *Limiter) increase() {
 	lim.queue <- 1
 }
 
+func (lim *Limiter) close() {
+	close(lim.queue)
+}
+
 func (lim *Limiter) reduce() {
 	lim.once.Do(lim.initQueue)
 	lim.queue <- -1

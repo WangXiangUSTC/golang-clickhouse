@@ -165,6 +165,11 @@ func (conn *Conn) Exec(query string) error {
 	return conn.ForcedExec(query)
 }
 
+// Close close conn, release limiter resource
+func (conn *Conn) Close() {
+	conn.Limiter.close()
+}
+
 // ForcedExec executes new query without requests limits
 func (conn *Conn) ForcedExec(query string) error {
 	message := fmt.Sprintf("Try to execute: %s", cutOffQuery(query, 500))
