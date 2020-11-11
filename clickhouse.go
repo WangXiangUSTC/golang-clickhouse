@@ -465,7 +465,7 @@ func (conn *Conn) doQuery(query string) (io.ReadCloser, error) {
 		req.Header.Set("Pragma", "no-cache")
 		req.Header.Set("Cache-Control", "no-cache")
 
-		req.Close = true
+		// req.Close = true
 
 		if attempts > 0 {
 			exponentialTime := attempts * conn.attemptWait
