@@ -49,7 +49,9 @@ func (lim *Limiter) increase() {
 }
 
 func (lim *Limiter) close() {
-	close(lim.queue)
+	if lim.queue != nil {
+		close(lim.queue)
+	}
 }
 
 func (lim *Limiter) reduce() {
