@@ -35,6 +35,8 @@ type Conn struct {
 	compression    int32
 	attemptsAmount uint32
 	attemptWait    uint32
+
+	useHTTPS bool
 }
 
 type Iter struct {
@@ -97,6 +99,10 @@ func (conn *Conn) Attempts(amount int, wait int) {
 
 	message := fmt.Sprintf("Set attempts amount (%d) and wait (%d seconds)", amount, wait)
 	cfg.logger.debug(message)
+}
+
+func (conn *Conn) SetUseHTTPS(useHTTPS bool) {
+	conn.useHTTPS = useHTTPS
 }
 
 // MaxMemoryUsage sets new maximum memory usage value
@@ -448,7 +454,11 @@ func (conn *Conn) doQuery(query string) (io.ReadCloser, error) {
 			options.Set("enable_http_compression", fmt.Sprintf("%d", compression))
 		}
 
-		urlStr := "http://" + conn.getFQDN(true) + "/?" + options.Encode()
+		httpPrefix := "http://"
+		if conn.useHTTPS {
+			httpPrefix = "https://"
+		}
+		urlStr := httpPrefix + conn.getFQDN(true) + "/?" + options.Encode()
 
 		req, err = http.NewRequest("POST", urlStr, strings.NewReader(query))
 		if err != nil {
